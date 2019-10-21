@@ -38,7 +38,7 @@ var game = {
   currentQuestion: 0,
   counter: countStartNumber,
   correct: 0,
-  incorrect: 
+  incorrect: 0,
 
   countdown: function() {
     game.counter--;
