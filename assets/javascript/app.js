@@ -1,7 +1,6 @@
 var card = $("#quiz-area");
 var countStartNumber = 30;
 
-// Question set
 var questions = [{
   question: "What was the first Star Wars Movie to be released",
   answers: ["Return of the Jedi", "Phantom Menace.", "A New Hope", "The Clone Wars"],
@@ -29,7 +28,6 @@ var questions = [{
   correctAnswer: "Walter White",
 }];
 
-// Variable to hold our setInterval
 var timer;
 
 var game = {
@@ -90,7 +88,7 @@ var game = {
 
     clearInterval(timer);
 
-    card.html("<h2>All done, heres how you did!</h2>");
+    card.html("<h2>YOU ARE MY FREND!</h2>");
 
     $("#counter-number").text(game.counter);
 
@@ -154,7 +152,6 @@ var game = {
   }
 };
 
-// CLICK EVENTS
 
 $(document).on("click", "#start-over", function() {
   game.reset();
@@ -165,6 +162,6 @@ $(document).on("click", ".answer-button", function(e) {
 });
 
 $(document).on("click", "#start", function() {
-  $("#sub-wrapper").prepend("<h2>Time Remaining: <span id='counter-number'>30</span> Seconds</h2>");
+  $("#subdiv").prepend("<h2>Time Remaining: <span id='counter-number'>30</span> Seconds</h2>");
   game.loadQuestion();
 });
