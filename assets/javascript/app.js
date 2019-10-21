@@ -25,7 +25,7 @@ var questions = [{
   correctAnswer: "Black",
 },  {
   question: "Heisenberg the Meth cook on AMC's Breaking Bad's real name was?",
-  answers: ["Walter White", "Jesse Pinkman", "Rick Grimes", "Todd Alquist"],
+  answers: ["Walt White", "Jesse Pinkman", "Rick Grimes", "Todd Alquist"],
   correctAnswer: "Walter White",
 }];
 
@@ -38,7 +38,7 @@ var game = {
   currentQuestion: 0,
   counter: countStartNumber,
   correct: 0,
-  incorrect: 0,
+  incorrect: 
 
   countdown: function() {
     game.counter--;
