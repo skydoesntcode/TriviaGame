@@ -1,167 +1,133 @@
-var card = $("#quiz-area");
-var countStartNumber = 30;
+$.fn.trivia = function() {
+  var _t = this;
+  _t.userPick = null;
+  _t.answers = {
+      correct: 0,
+      incorrect: 0
+  };
+  _t.images = null;
+  _t.count = 30;
+  _t.current = 0;
+  _t.questions = [{
+      question: "In Aladdin, what is the name of Jasmine's pet tiger?",
+      choices: ["Rajah", "Bo", "Iago", "Jack"],
+      images: ["../images/Rajah.gif"],
+      correct: 0
+  }, {
+      question: "In Peter Pan, Captain Hook had a hook on which part of his     body?",
+      choices: ["Right Foot", "Left Hand", "Left Foot", "Right Hand"],
+      correct: 1
 
-var questions = [{
-  question: "What was the first Star Wars Movie to be released",
-  answers: ["Return of the Jedi", "Phantom Menace.", "A New Hope", "The Clone Wars"],
-  correctAnswer: "A New Hope",
-}, {
-  question: "Who is the lead singer of Black Sabbath",
-  answers: ["Freddy Mercury", "Ossie Osbourne", "Robert Plant", "Stevie Knicks"],
-  correctAnswer: "Ossie Osbourne",
-}, {
-  question: "Which baseball team suffered the curse of the Bambino?",
-  answers: ["Red Sox", "White Sox", "The Cubs", "The Dodgers"],
-  correctAnswer: "Red Sox",
+  }, {
+      question: "In the Lion King, where does Mufasa and his family live?",
+      choices: ["Rocky Mountain", "Forest", "Desert", "Pride Rock"],
+      correct: 3
 
-}, {
-  question: "Kurt Cobain was the lead signer of which band",
-  answers: ["Nirvana", "The Misfits", "The Buzzcocks", "Hollywood Undead"],
-  correctAnswer: "Nirvana",
-},  {
-  question: "What is my favorite color",
-  answers: ["Black", "Blue", "Green", "Yellow"],
-  correctAnswer: "Black",
-},  {
-  question: "Heisenberg the Meth cook on AMC's Breaking Bad's real name was?",
-  answers: ["Walt White", "Jesse Pinkman", "Rick Grimes", "Todd Alquist"],
-  correctAnswer: "Walter White",
-}];
+  }, {
+      question: "In Beauty and the Beast, how many eggs does Gaston eat for    breakfast?",
+      choices: ["2 Dozen", "5 Dozen", "5000", "0"],
+      correct: 1
 
-var timer;
+  }, {
+      question: "In Alice in Wonderland, what is the name of Alice’s kitten?",
+      choices: ["Dinah", "Sammie", "Kat", "Luna"],
+      correct: 0
 
-var game = {
+  }, {
+      question: "After being on earth, where did Hercules first meet his   father Zeus?",
+      choices: ["Mount Olympus", "Greece", "In the Temple of Zeus", "Elysian   Fields"],
+      correct: 2
 
-  questions: questions,
-  currentQuestion: 0,
-  counter: countStartNumber,
-  correct: 0,
-  incorrect: 0,
+  }, {
+      question: "During the ballroom scene of Beauty & the Beast, what color is Belle’s Gown?",
+      choices: ["Yellow", "Blue", "Gold", "White"],
+      correct: 2
 
-  countdown: function() {
-    game.counter--;
-    $("#counter-number").text(game.counter);
-    if (game.counter === 0) {
-      console.log("TIME UP");
-      game.timeUp();
-    }
-  },
+  }, {
+      question: "In Bambi, what word does the owl use to describe falling in love?",
+      choices: ["Whimsical", "Miserable", "Joyful", "Twitterpatted"],
+      correct: 3
+  }];
+  _t.ask = function() {
+      if (_t.questions[_t.current]) {
+          $("#timer").html("Time remaining: " + "00:" + _t.count + " secs");
+          $("#question_div").html(_t.questions[_t.current].question);
+          var choicesArr = _t.questions[_t.current].choices;
+          var buttonsArr = [];
 
-  loadQuestion: function() {
+          for (var i = 0; i < choicesArr.length; i++) {
+              var button = $('<button>');
+              button.text(choicesArr[i]);
+              button.attr('data-id', i);
+              $('#choices_div').append(button);
+          }
+          window.triviaCounter = setInterval(_t.timer, 1000);
+      } else {
+          $('body').append($('<div />', {
+              text: 'Unanswered: ' + (
+                  _t.questions.length - (_t.answers.correct + _t.answers.incorrect)),
+              class: 'result'
+          }));
+          $('#start_button').text('Restart').appendTo('body').show();
+      }
+  };
+  _t.timer = function() {
+      _t.count--;
+      if (_t.count <= 0) {
+          setTimeout(function() {
+              _t.nextQ();
+          });
 
-    timer = setInterval(game.countdown, 1000);
-
-    card.html("<h2>" + questions[this.currentQuestion].question + "</h2>");
-
-    for (var i = 0; i < questions[this.currentQuestion].answers.length; i++) {
-      card.append("<button class='answer-button' id='button' data-name='" + questions[this.currentQuestion].answers[i]
-      + "'>" + questions[this.currentQuestion].answers[i] + "</button>");
-    }
-  },
-
-  nextQuestion: function() {
-    game.counter = countStartNumber;
-    $("#counter-number").text(game.counter);
-    game.currentQuestion++;
-    game.loadQuestion();
-  },
-
-  timeUp: function() {
-
-    clearInterval(timer);
-
-    $("#counter-number").html(game.counter);
-
-    card.html("<h2>Out of Time!</h2>");
-    card.append("<h3>The Correct Answer was: " + questions[this.currentQuestion].correctAnswer);
-    card.append("<img src='" + questions[this.currentQuestion].image + "' />");
-
-    if (game.currentQuestion === questions.length - 1) {
-      setTimeout(game.results, 3 * 1000);
-    }
-    else {
-      setTimeout(game.nextQuestion, 3 * 1000);
-    }
-  },
-
-  results: function() {
-
-    clearInterval(timer);
-
-    card.html("<h2>YOU ARE MY FREND!</h2>");
-
-    $("#counter-number").text(game.counter);
-
-    card.append("<h3>Correct Answers: " + game.correct + "</h3>");
-    card.append("<h3>Incorrect Answers: " + game.incorrect + "</h3>");
-    card.append("<h3>Unanswered: " + (questions.length - (game.incorrect + game.correct)) + "</h3>");
-    card.append("<br><button id='start-over'>reset?</button>");
-  },
-
-  clicked: function(e) {
-    clearInterval(timer);
-    if ($(e.target).attr("data-name") === questions[this.currentQuestion].correctAnswer) {
-      this.answeredCorrectly();
-    }
-    else {
-      this.answeredIncorrectly();
-    }
-  },
-
-  answeredIncorrectly: function() {
-
-    game.incorrect++;
-
-    clearInterval(timer);
-
-    card.html("<h2>No</h2>");
-    card.append("<h3> Answer: " + questions[game.currentQuestion].correctAnswer + "</h3>");
-    card.append("<img src='" + questions[game.currentQuestion].image + "' />");
-
-    if (game.currentQuestion === questions.length - 1) {
-      setTimeout(game.results, 3 * 1000);
-    }
-    else {
-      setTimeout(game.nextQuestion, 3 * 1000);
-    }
-  },
-
-  answeredCorrectly: function() {
-
-    clearInterval(timer);
-
-    game.correct++;
-
-    card.html("<h2>Correct!</h2>");
-    card.append("<img src='" + questions[game.currentQuestion].image + "' />");
-
-    if (game.currentQuestion === questions.length - 1) {
-      setTimeout(game.results, 3 * 1000);
-    }
-    else {
-      setTimeout(game.nextQuestion, 3 * 1000);
-    }
-  },
-
-  reset: function() {
-    this.currentQuestion = 0;
-    this.counter = countStartNumber;
-    this.correct = 0;
-    this.incorrect = 0;
-    this.loadQuestion();
-  }
+      } else {
+          $("#timer").html("Time remaining: " + "00:" + _t.count + " secs");
+      }
+  };
+  _t.nextQ = function() {
+      _t.current++;
+      clearInterval(window.triviaCounter);
+      _t.count = 30;
+      $('#timer').html("");
+      setTimeout(function() {
+          _t.cleanUp();
+          _t.ask();
+      }, 1000)
+  };
+  _t.cleanUp = function() {
+      $('div[id]').each(function(item) {
+          $(this).html('');
+      });
+      $('.correct').html('Correct answers: ' + _t.answers.correct);
+      $('.incorrect').html('Incorrect answers: ' + _t.answers.incorrect);
+  };
+  _t.answer = function(correct) {
+      var string = correct ? 'correct' : 'incorrect';
+      _t.answers[string]++;
+      $('.' + string).html(string + ' answers: ' + _t.answers[string]);
+  };
+  return _t;
 };
+var Trivia;
 
-
-$(document).on("click", "#start-over", function() {
-  game.reset();
+$("#start_button").click(function() {
+  $(this).hide();
+  $('.result').remove();
+  $('div').html('');
+  Trivia = new $(window).trivia();
+  Trivia.ask();
 });
 
-$(document).on("click", ".answer-button", function(e) {
-  game.clicked(e);
-});
+$('#choices_div').on('click', 'button', function(e) {
+  var userPick = $(this).data("id"),
+      _t = Trivia || $(window).trivia(),
+      index = _t.questions[_t.current].correct,
+      correct = _t.questions[_t.current].choices[index];
 
-$(document).on("click", "#start", function() {
-  $("#subdiv").prepend("<h2>Time Remaining: <span id='counter-number'>30</span> Seconds</h2>");
-  game.loadQuestion();
+  if (userPick !== index) {
+      $('#choices_div').text("Wrong Answer! The correct answer was: " + correct);
+      _t.answer(false);
+  } else {
+      $('#choices_div').text("Correct!!! The correct answer was: " + correct);
+      _t.answer(true);
+  }
+  _t.nextQ();
 });
